@@ -10,7 +10,7 @@ namespace Helpers;
 
 class AjaxHandler {
 
-    private static $responseContentType = "application/json";
+    private static $responseContentType = 'application/json';
     private static $statusHeader = 200; // OK
     private static $timers = array();
     private static $callback;
@@ -46,10 +46,10 @@ class AjaxHandler {
             $request = $_REQUEST;
         }
         # Keep request time
-        self::timerStart("Request");
+        self::timerStart('Request');
         # if this is a JSONP request than use callback function
-        self::$callback = isset($request["callback"]) ? $request["callback"] : false;
-        self::$callback = isset($request["callbackName"]) ? $request["callbackName"] : self::$callback;
+        self::$callback = isset($request['callback']) ? $request['callback'] : false;
+        self::$callback = isset($request['callbackName']) ? $request['callbackName'] : self::$callback;
         # Set request
         self::$request = $request;
         # Set Path parameter
@@ -63,7 +63,7 @@ class AjaxHandler {
             self::$lazy = self::$request['lazy'];
         }
         # Define Error Handler
-        set_error_handler(array(get_class(), "errorHandler"));
+        set_error_handler(array(get_class(), 'errorHandler'));
     }
 
     /**
@@ -83,7 +83,7 @@ class AjaxHandler {
      */
     protected static function timerEnd($title) {
         $end = microtime(true);
-        return sprintf("%01.4f", ($end - self::$timers[$title]));
+        return sprintf('%01.4f', ($end - self::$timers[$title]));
     }
 
     /**
@@ -98,10 +98,10 @@ class AjaxHandler {
         }
         $val = self::$request[$key];
         if (!is_array($val)) {
-            if (strtolower($val) == "true") {
+            if (strtolower($val) == 'true') {
                 $val = true;
             }
-            if (strtolower($val) == "false") {
+            if (strtolower($val) == 'false') {
                 $val = false;
             }
         }
@@ -121,11 +121,11 @@ class AjaxHandler {
         }
         if ($errno & (E_ALL ^ E_NOTICE)) {
             $types = array(1 => 'error', 2 => 'warning', 4 => 'parse error', 8 => 'notice', 16 => 'core error', 32 => 'core warning', 64 => 'compile error', 128 => 'compile warning', 256 => 'user error', 512 => 'user warning', 1024 => 'user notice', 2048 => 'strict warning');
-            $entry = "<div style='text-align:left;'><span><b>" . @$types[$errno] . "</b></span>: $message <br><br>
+            $entry = '<div style="text-align:left;"><span><b>' . @$types[$errno] . "</b></span>: $message <br><br>
                 <span> <b>in</b> </span>: $filename <br>
                 <span> <b>on line</b> </span>: $line </div>";
 
-            error_log("Request Server Error:" . $message . "\nFile:" . $filename . "\nOn Line: " . $line);
+            error_log('Request Server Error:' . $message . "\nFile:" . $filename . "\nOn Line: " . $line);
             self::x_error($entry, 500);
         }
     }
@@ -138,11 +138,11 @@ class AjaxHandler {
      * @param int $status status optional
      */
     public static function x_error($message, $data = array(), $status = -100) {
-        $addHash["message"] = $message;
+        $addHash['message'] = $message;
         $addHash['data']    = $data;
         $addHash['status']  = $status;
-        $addHash["error"]   = true;
-        $addHash["success"] = false;
+        $addHash['error']   = true;
+        $addHash['success'] = false;
         self::response($addHash);
     }
 
@@ -154,11 +154,11 @@ class AjaxHandler {
      * @param int $status status optional
      */
     public static function x_success($message, $data = array(), $status = 7) {
-        $addHash["message"] = $message;
+        $addHash['message'] = $message;
         $addHash['data']    = $data;
         $addHash['status']  = $status;
-        $addHash["error"]   = false;
-        $addHash["success"] = true;
+        $addHash['error']   = false;
+        $addHash['success'] = true;
         self::response($addHash);
     }
 
@@ -194,13 +194,13 @@ class AjaxHandler {
      * @param array $addHash
      */
     private static function response($addHash) {
-        $addHash["duration"] = self::timerEnd("Request");
+        $addHash['duration'] = self::timerEnd('Request');
         # Prevent browsers to cache response
-        @header("Cache-Control: no-cache, must-revalidate", true); # HTTP/1.1
-        @header("Expires: Sat, 26 Jul 1997 05:00:00 GMT", true);   # Date in the past
-        @header("Content-Type: " . self::$responseContentType . "; charset=utf-8", true, self::$statusHeader);
+        @header('Cache-Control: no-cache, must-revalidate', true); # HTTP/1.1
+        @header('Expires: Sat, 26 Jul 1997 05:00:00 GMT', true);   # Date in the past
+        @header('Content-Type: ' . self::$responseContentType . '; charset=utf-8', true, self::$statusHeader);
         if (self::$callback) {
-            $response = self::$callback . "(" . json_encode($addHash) . ");";
+            $response = self::$callback . '(' . json_encode($addHash) . ');';
         } else {
             $response = json_encode($addHash);
         }
