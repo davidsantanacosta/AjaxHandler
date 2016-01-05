@@ -164,15 +164,14 @@ class AjaxHandler {
         return self::$requestType;
     }
 
-
     /**
      * Set Mine of ContentType
-     * @param string $responseContentType 
+     * @param string $mime 
      * @exemple setMineResponse('application/x-json')
      * @exemple setMineResponse('application/xml')
      */
-    public static function setMimeResponse($Mine) {
-        self::$responseContentType = $Mine;
+    public static function setMimeResponse($mime) {
+        self::$responseContentType = $mime;
     }
 
     /**
