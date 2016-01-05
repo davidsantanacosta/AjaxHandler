@@ -133,11 +133,13 @@ class AjaxHandler {
     /**
      * Prompts a standard error response, all errors must prompt by this function
      * adds success:false automatically
-     * @param object|string $message An error message, you can directly pass all parameters here
+     * @param string $message An error message, you can directly pass all parameters here
+     * @param array|object $data if you want to make an information return by ajax, both error and success
      * @param int $status status optional
      */
-    public static function x_error($message, $status = -100) {
+    public static function x_error($message, $data = array(), $status = -100) {
         $addHash["error"]   = $message;
+        $addHash['data']    = $data;
         $addHash['status']  = $status;
         $addHash["success"] = false;
         self::response($addHash);
@@ -146,11 +148,13 @@ class AjaxHandler {
     /**
      * Prompts the request response by given hash
      * adds standard success:true message automatically
-     * @param object|string $message Success message you can also pass the all parameters as an array here
+     * @param string $message Success message you can also pass the all parameters as an array here
+     * @param array|object $data if you want to make an information return by ajax, both error and success
      * @param int $status status optional
      */
-    public static function x_success($message, $status = 7) {
+    public static function x_success($message, $data = array(), $status = 7) {
         $addHash["message"] = $message;
+        $addHash['data']    = $data;
         $addHash['status']  = $status;
         $addHash["success"] = true;
         self::response($addHash);
