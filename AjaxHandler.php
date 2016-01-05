@@ -138,9 +138,10 @@ class AjaxHandler {
      * @param int $status status optional
      */
     public static function x_error($message, $data = array(), $status = -100) {
-        $addHash["error"]   = $message;
+        $addHash["message"] = $message;
         $addHash['data']    = $data;
         $addHash['status']  = $status;
+        $addHash["error"]   = true;
         $addHash["success"] = false;
         self::response($addHash);
     }
@@ -156,6 +157,7 @@ class AjaxHandler {
         $addHash["message"] = $message;
         $addHash['data']    = $data;
         $addHash['status']  = $status;
+        $addHash["error"]   = false;
         $addHash["success"] = true;
         self::response($addHash);
     }
