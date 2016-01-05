@@ -10,7 +10,7 @@ namespace Helpers;
 
 class AjaxHandler {
 
-    private static $responseContentType = "application/x-json";
+    private static $responseContentType = "application/json";
     private static $timers = array();
     private static $callback;
     private static $path;
