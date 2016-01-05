@@ -11,6 +11,7 @@ namespace Helpers;
 class AjaxHandler {
 
     private static $responseContentType = "application/json";
+    private static $statusHeader = 200; // OK
     private static $timers = array();
     private static $callback;
     private static $path;
@@ -133,24 +134,26 @@ class AjaxHandler {
      * Prompts a standard error response, all errors must prompt by this function
      * adds success:false automatically
      * @param object|string $message An error message, you can directly pass all parameters here
-     * @param int $status Http status optional
+     * @param int $status status optional
      */
-    public static function x_error($message, $status = 400) {
-        $addHash["error"] = $message;
+    public static function x_error($message, $status = -100) {
+        $addHash["error"]   = $message;
+        $addHash['status']  = $status;
         $addHash["success"] = false;
-        self::response($addHash, $status);
+        self::response($addHash);
     }
 
     /**
      * Prompts the request response by given hash
      * adds standard success:true message automatically
      * @param object|string $message Success message you can also pass the all parameters as an array here
-     * @param int $status Http status optional
+     * @param int $status status optional
      */
-    public static function x_success($message, $status = 200) {
+    public static function x_success($message, $status = 7) {
         $addHash["message"] = $message;
+        $addHash['status']  = $status;
         $addHash["success"] = true;
-        self::response($addHash, $status);
+        self::response($addHash);
     }
 
     /**
@@ -173,16 +176,24 @@ class AjaxHandler {
     }
 
     /**
+     * Set Status Header
+     * @param int $status 
+     * @link https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+     */
+    public static function setStatusHeader($status) {
+        self::$statusHeader = $status;
+    }
+
+    /**
      * Handles the response for both success and error methods
      * @param array $addHash
-     * @param type $status Status
      */
-    private static function response($addHash, $status) {
+    private static function response($addHash) {
         $addHash["duration"] = self::timerEnd("Request");
         # Prevent browsers to cache response
         @header("Cache-Control: no-cache, must-revalidate", true); # HTTP/1.1
         @header("Expires: Sat, 26 Jul 1997 05:00:00 GMT", true);   # Date in the past
-        @header("Content-Type: " . self::$responseContentType . "; charset=utf-8", true, $status);
+        @header("Content-Type: " . self::$responseContentType . "; charset=utf-8", true, self::$statusHeader);
         if (self::$callback) {
             $response = self::$callback . "(" . json_encode($addHash) . ");";
         } else {
